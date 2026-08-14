@@ -1,0 +1,28 @@
+#frontend design without using html,css,js
+streamlit
+
+#Utilities
+numpy
+pandas
+
+#Face recognition
+scikit-learn
+#FACE DETECTION in image
+dlib-bin
+
+#FACE DIMINATION IN FORM OF VECTOR
+git+https://github.com/ageitgey/face_recognition
+setuptools<70.0.0  #git file convert into python packag
+
+#database
+supabase
+#hashing
+bcrypt 
+
+#convert url into QR code
+segno
+#deal with images in python ex.flip img,rotate img,resize img,transform img....
+pillow
+
+librosa
+resemblyzer
