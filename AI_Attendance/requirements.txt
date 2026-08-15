@@ -1,23 +1,21 @@
-# Frontend
-streamlit
+# Streamlit
+streamlit==1.60.0
 
-# Utilities
-numpy
-pandas
+# Core data / ML
+numpy==2.2.6
+pandas==2.3.1
+scikit-learn==1.7.1
+pillow==11.3.0
 
-# Machine Learning & Images
-scikit-learn
-pillow
+# Face recognition
+# dlib-bin provides prebuilt Linux wheels, avoiding a source compilation on Community Cloud.
+dlib-bin==20.0.1
 
-# Face Recognition (Streamlit handles compiling if cmake is in packages.txt)
-dlib
-face_recognition
+# Database / security
+supabase==2.18.1
+bcrypt==4.3.0
 
-# Database & Security
-supabase
-bcrypt 
-
-# Other Utilities
-segno
-librosa
-resemblyzer
+# QR / voice utilities
+segno==1.6.6
+librosa==0.11.0
+resemblyzer==0.1.4
