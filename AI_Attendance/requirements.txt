@@ -1,6 +1,9 @@
 # Streamlit
 streamlit==1.60.0
 
+# Keep pkg_resources available for the legacy webrtcvad package used by Resemblyzer.
+setuptools==80.9.0
+
 # Core data / ML
 numpy==2.2.6
 pandas==2.3.1
@@ -8,7 +11,6 @@ scikit-learn==1.7.1
 pillow==11.3.0
 
 # Face recognition
-# dlib-bin provides prebuilt Linux wheels, avoiding a source compilation on Community Cloud.
 dlib-bin==20.0.1
 
 # Database / security
