@@ -40,7 +40,7 @@ else:
 
 encoder = VGGEncoder('vgg_normalised.pth').to(device)
 decoder = Decoder().to(device)
-decoder.load_state_dict(torch.load('/Users/nirdeshbalar/Desktop/NTS/experiment/final_exp/decoder_final.pth'))
+decoder.load_state_dict(torch.load('/Users/nirdeshbalar/Documents/Projects/NST/experiment/final_exp/decoder_final.pth'))
 
 encoder.eval()
 decoder.eval()
