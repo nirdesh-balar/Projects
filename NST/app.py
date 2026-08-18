@@ -14,10 +14,13 @@ import io
 from utils.models import VGGEncoder, Decoder
 from utils.utils import adaptive_instance_normalization, calc_mean_std
 
+# Resolve all project files relative to this app.py file.
+# This works both locally and on Render.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'supersecretkey'
-app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = os.path.join(BASE_DIR, 'static', 'uploads')
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
 Bootstrap(app)
 
@@ -31,16 +34,26 @@ class UploadForm(FlaskForm):
     alpha = FloatField('Alpha', default=1.0)
     submit = SubmitField('Transfer Style')
 
-if torch.backends.mps.is_available():
+if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
     device = torch.device("mps")
 elif torch.cuda.is_available():
     device = torch.device("cuda")
 else:
     device = torch.device("cpu")
 
-encoder = VGGEncoder('vgg_normalised.pth').to(device)
+# Model paths are relative to the deployed NST directory.
+VGG_PATH = os.path.join(BASE_DIR, 'vgg_normalised.pth')
+DECODER_PATH = os.path.join(BASE_DIR, 'experiment', 'final_exp', 'decoder_final.pth')
+
+if not os.path.isfile(VGG_PATH):
+    raise FileNotFoundError(f'VGG model not found: {VGG_PATH}')
+
+if not os.path.isfile(DECODER_PATH):
+    raise FileNotFoundError(f'Decoder model not found: {DECODER_PATH}')
+
+encoder = VGGEncoder(VGG_PATH).to(device)
 decoder = Decoder().to(device)
-decoder.load_state_dict(torch.load('/Users/nirdeshbalar/Documents/Projects/NST/experiment/final_exp/decoder_final.pth'))
+decoder.load_state_dict(torch.load(DECODER_PATH, map_location=device))
 
 encoder.eval()
 decoder.eval()
@@ -81,7 +94,6 @@ def save_image(image, path):
     image = image.clamp(0, 1)
     image = transforms.ToPILImage()(image)
     image.save(path)
-
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -144,9 +156,9 @@ def send_image(filename):
 
 @app.route('/examples/<path:filename>')
 def send_example(filename):
-    return send_from_directory('examples', filename)
+    return send_from_directory(os.path.join(BASE_DIR, 'examples'), filename)
 
 
 if __name__ == '__main__':
     from werkzeug.serving import run_simple
-    run_simple('localhost', 5000, app, use_reloader=True, use_debugger=True)
+    run_simple('0.0.0.0', int(os.environ.get('PORT', 5000)), app, use_reloader=True, use_debugger=True)
