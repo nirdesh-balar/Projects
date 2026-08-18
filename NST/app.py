@@ -110,6 +110,8 @@ def index():
                 content_filename = secure_filename(form.content.data.filename)
                 form.content.data.save(os.path.join(app.config['UPLOAD_FOLDER'], content_filename))
                 form.content_path.data = content_filename
+            else:
+                error = 'Please upload a valid content image (PNG, JPG, or JPEG).'
         else:
             content_filename = form.content_path.data
 
@@ -118,10 +120,12 @@ def index():
                 style_filename = secure_filename(form.style.data.filename)
                 form.style.data.save(os.path.join(app.config['UPLOAD_FOLDER'], style_filename))
                 form.style_path.data = style_filename
+            else:
+                error = 'Please upload a valid style image (PNG, JPG, or JPEG).'
         else:
             style_filename = form.style_path.data
 
-        if content_filename and style_filename:
+        if not error and content_filename and style_filename:
             content_path = os.path.join(app.config['UPLOAD_FOLDER'], content_filename)
             style_path = os.path.join(app.config['UPLOAD_FOLDER'], style_filename)
             
@@ -139,11 +143,13 @@ def index():
                 result_image = result_filename
             except Exception as e:
                 error = str(e)
-    else:
-        if not content_filename:
-            error = 'Please upload content image'
-        if not style_filename:
-            error = 'Please upload style image'
+        elif not error:
+            missing = []
+            if not content_filename:
+                missing.append('content image')
+            if not style_filename:
+                missing.append('style image')
+            error = 'Please upload ' + ' and '.join(missing) + '.'
 
     return render_template('index.html', form=form, result_image=result_image, content_image=content_filename,
                            style_image=style_filename, error=error)
